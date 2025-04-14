@@ -1,10 +1,11 @@
 import streamlit as st
 import whisper
-from openai import OpenAI
+import openai
 import os
 
-# Optionally use environment variable or hardcode
-client = OpenAI(api_key="sk-abcdef1234567890abcdef1234567890abcdef12")
+# Set Groq API base and key
+openai.api_key = "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"  # Replace with your key
+openai.base_url = "https://api.groq.com/openai/v1/"
 
 # Load Whisper model
 model = whisper.load_model("base")
@@ -15,21 +16,20 @@ st.write("Upload an audio file or transcript to get meeting notes!")
 uploaded_file = st.file_uploader("Upload Audio (.mp3/.wav) or Text (.txt)", type=["mp3", "wav", "txt"])
 
 def summarize_transcript(transcript_text):
-    response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+    chat_completion = openai.chat.completions.create(
+        model="llama3-70b-8192",
         messages=[
             {"role": "system", "content": "You're an assistant that summarizes meeting transcripts."},
             {"role": "user", "content": f"Summarize this meeting:\n{transcript_text}"}
         ],
         temperature=0.7
     )
-    return response.choices[0].message.content
+    return chat_completion.choices[0].message.content
 
 if uploaded_file:
     file_type = uploaded_file.type
 
     if file_type.startswith("audio"):
-        # Save and transcribe audio
         with open("temp_audio.wav", "wb") as f:
             f.write(uploaded_file.read())
         st.info("Transcribing audio...")
