@@ -1,15 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>AI Meeting Note Assistant</title>
+  <meta charset="UTF-8">
+  <title>AI Meeting Note Assistant</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
-    <h1>Upload Audio or Text File</h1>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <input type="file" name="file" required><br><br>
-        <input type="submit" value="Upload & Summarize">
+  <div class="container">
+    <h1>AI Meeting Note Assistant</h1>
+
+    <form id="upload-form">
+      <input type="file" id="file" name="file" accept=".mp3,.wav,.txt" required />
+      <button type="button" id="transcribe-btn">Get Transcript</button>
+      <button type="button" id="summarize-btn" disabled>Summarize</button>
     </form>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <div id="status" style="margin-top: 1rem;"></div>
+
+    <div style="margin-top: 2rem;">
+      <div id="transcript-section" style="display: none;">
+        <h2>Transcript</h2>
+        <div id="transcript" class="transcript-box"></div>
+      </div>
+
+      <div id="summary-section" style="display: none;">
+        <h2>Summary</h2>
+        <div id="summary" class="summary-box"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

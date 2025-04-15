@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, render_template
 import whisper
-from openai import OpenAI  
+from openai import OpenAI
 import os
 from werkzeug.utils import secure_filename
 
@@ -9,23 +9,23 @@ UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# ✅ Correct Groq API setup
+# ✅ Groq API setup
 client = OpenAI(
     api_key="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",
     base_url="https://api.groq.com/openai/v1"
 )
 
-# Load Whisper model
+# Load Whisper model once
 model = whisper.load_model("base")
 
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# ✅ Route for transcription only
 @app.route('/upload', methods=['POST'])
 def upload_file():
     file = request.files['file']
-
     if not file:
         return jsonify({"error": "No file uploaded"}), 400
 
@@ -33,7 +33,6 @@ def upload_file():
     filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     file.save(filepath)
 
-    # Handle audio or text
     if filename.endswith(('.mp3', '.wav')):
         result = model.transcribe(filepath)
         transcript = result["text"]
@@ -43,18 +42,36 @@ def upload_file():
     else:
         return jsonify({"error": "Unsupported file type"}), 400
 
-    # Summarization using Groq
+    return jsonify({"transcript": transcript})
+
+# ✅ Separate route for summarizing transcript
+@app.route('/summarize', methods=['POST'])
+def summarize():
+    data = request.get_json()
+    transcript = data.get("transcript", "")
+
+    if not transcript:
+        return jsonify({"error": "Transcript not provided"}), 400
+
     try:
         response = client.chat.completions.create(
             model="llama3-70b-8192",
             messages=[
-                {"role": "system", "content": "You're an assistant that summarizes meeting transcripts."},
+                {"role": "system", "content": "You're an assistant that summarizes meeting transcripts in a structured way, with bullet points and clear headings."},
                 {"role": "user", "content": f"Summarize this meeting:\n{transcript}"}
             ],
             temperature=0.7
         )
         summary = response.choices[0].message.content
-        return jsonify({"transcript": transcript, "summary": summary})
+
+        # Format summary into bullet points
+        formatted_summary = "<ul>"
+        for line in summary.strip().split('\n'):
+            if line.strip():  # ignore empty lines
+                formatted_summary += f"<li>{line.strip()}</li>"
+        formatted_summary += "</ul>"
+
+        return jsonify({"summary": formatted_summary})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
