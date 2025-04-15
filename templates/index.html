@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Meeting Note Assistant</title>
+</head>
+<body>
+    <h1>Upload Audio or Text File</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" required><br><br>
+        <input type="submit" value="Upload & Summarize">
+    </form>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

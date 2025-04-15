@@ -1,56 +1,62 @@
-import streamlit as st
+from flask import Flask, request, jsonify, render_template
 import whisper
-import openai
+from openai import OpenAI  
 import os
+from werkzeug.utils import secure_filename
 
-# Set Groq API base and key
-openai.api_key = "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"  # Replace with your key
-openai.base_url = "https://api.groq.com/openai/v1/"
+app = Flask(__name__)
+UPLOAD_FOLDER = 'uploads'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# ✅ Correct Groq API setup
+client = OpenAI(
+    api_key="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",
+    base_url="https://api.groq.com/openai/v1"
+)
 
 # Load Whisper model
 model = whisper.load_model("base")
 
-st.title("AI Meeting Note Assistant")
-st.write("Upload an audio file or transcript to get meeting notes!")
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-uploaded_file = st.file_uploader("Upload Audio (.mp3/.wav) or Text (.txt)", type=["mp3", "wav", "txt"])
+@app.route('/upload', methods=['POST'])
+def upload_file():
+    file = request.files['file']
 
-def summarize_transcript(transcript_text):
-    chat_completion = openai.chat.completions.create(
-        model="llama3-70b-8192",
-        messages=[
-            {"role": "system", "content": "You're an assistant that summarizes meeting transcripts."},
-            {"role": "user", "content": f"Summarize this meeting:\n{transcript_text}"}
-        ],
-        temperature=0.7
-    )
-    return chat_completion.choices[0].message.content
+    if not file:
+        return jsonify({"error": "No file uploaded"}), 400
 
-if uploaded_file:
-    file_type = uploaded_file.type
+    filename = secure_filename(file.filename)
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(filepath)
 
-    if file_type.startswith("audio"):
-        with open("temp_audio.wav", "wb") as f:
-            f.write(uploaded_file.read())
-        st.info("Transcribing audio...")
-        result = model.transcribe("temp_audio.wav")
+    # Handle audio or text
+    if filename.endswith(('.mp3', '.wav')):
+        result = model.transcribe(filepath)
         transcript = result["text"]
-
-    elif file_type == "text/plain":
-        transcript = uploaded_file.read().decode("utf-8")
-
+    elif filename.endswith('.txt'):
+        with open(filepath, 'r', encoding='utf-8') as f:
+            transcript = f.read()
     else:
-        st.error("Unsupported file type.")
-        st.stop()
+        return jsonify({"error": "Unsupported file type"}), 400
 
-    st.success("Transcript ready!")
-    st.text_area("Transcript", transcript, height=200)
+    # Summarization using Groq
+    try:
+        response = client.chat.completions.create(
+            model="llama3-70b-8192",
+            messages=[
+                {"role": "system", "content": "You're an assistant that summarizes meeting transcripts."},
+                {"role": "user", "content": f"Summarize this meeting:\n{transcript}"}
+            ],
+            temperature=0.7
+        )
+        summary = response.choices[0].message.content
+        return jsonify({"transcript": transcript, "summary": summary})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-    if st.button("Summarize"):
-        st.info("Summarizing...")
-        try:
-            summary = summarize_transcript(transcript)
-            st.subheader("📌 Summary")
-            st.write(summary)
-        except Exception as e:
-            st.error(f"Error: {e}")
+if __name__ == '__main__':
+    app.run(debug=True)
