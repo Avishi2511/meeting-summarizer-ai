@@ -50,8 +50,10 @@ document.getElementById("summarize-btn").addEventListener("click", async functio
 
   document.getElementById("status").innerText = "✅ Summary ready!";
 
-  // ✅ Parse markdown from model into HTML
-  const formatted = marked.parse(data.summary);
+  // ✅ Parse the summary text (which is in Markdown) to HTML
+  const formatted = marked.parse(data.summary);  // Convert markdown to HTML
+
+  // ✅ Display the HTML content
   document.getElementById("summary").innerHTML = formatted;
   document.getElementById("summary-section").style.display = "block";
 });

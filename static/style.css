@@ -66,12 +66,23 @@ textarea {
   line-height: 1.6;
 }
 
-#summary-section ul,
-#summary-section li {
-  list-style-type: none;
-  padding-left: 1em;
+#summary ul {
+  list-style-type: disc;
+  margin-left: 1.5rem;  /* Indentation for the list */
+}
+
+#summary li {
   margin-bottom: 8px;
 }
+
+#summary strong {
+  font-weight: bold;
+}
+
+#summary em {
+  font-style: italic;
+}
+
 
 #output ul {
   list-style-type: none;
