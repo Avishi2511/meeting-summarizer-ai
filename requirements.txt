@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+python-multipart
+openai
+python-dotenv
+whisper
+jinja2
+langchain
+langchain-community
+langchain-openai
+python-docx
+PyPDF2
+google-generativeai

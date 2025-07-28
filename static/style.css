@@ -1,25 +1,38 @@
 body {
   font-family: Arial, sans-serif;
-  background-color: #f8f9fa;
+  background-color: #0f0f10;
+  color: white;
   padding: 2rem;
-  display: flex;
-  justify-content: center;
-}
-
-.container {
-  background-color: white;
-  border-radius: 10px;
-  padding: 2rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 600px;
+  max-width: 700px;
+  margin: auto;
 }
 
 h1, h2 {
-  color: #333;
+  color: white;
+  text-align: left;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
+}
+
+.upload-box {
+  background-color: #1e1e1e;
+  border: 2px dashed #444;
+  color: #ccc;
+  text-align: center;
+  padding: 2rem;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: background-color 0.3s;
+  display: block;
+}
+
+.upload-box:hover {
+  background-color: #2c2c2c;
 }
 
 input[type="file"] {
-  margin-bottom: 1rem;
+  display: none;
 }
 
 button {
@@ -30,45 +43,33 @@ button {
   font-size: 1rem;
   border-radius: 5px;
   cursor: pointer;
+  margin: 0.5rem;
 }
 
 button:hover {
   background-color: #333;
 }
 
-textarea {
-  width: 100%;
-  height: 150px;
+.status-box {
   margin-top: 1rem;
-  margin-bottom: 1rem;
   padding: 1rem;
   border-radius: 5px;
-  border: 1px solid #ccc;
-  resize: none;
-  font-family: monospace;
-  font-size: 0.95rem;
-  background-color: #f0f0f0;
+  text-align: center;
 }
 
 .transcript-box, .summary-box {
-  background-color: #f9f9f9;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  border: 1px solid #ddd;
-}
-
-#summary {
-  background-color: #f9f9f9;
+  background-color: #1e1e1e;
   padding: 1rem;
-  border-left: 4px solid #000;
   border-radius: 8px;
-  line-height: 1.6;
+  margin-top: 1rem;
+  border: 1px solid #444;
+  color: #ddd;
+  white-space: pre-wrap;
 }
 
 #summary ul {
   list-style-type: disc;
-  margin-left: 1.5rem;  /* Indentation for the list */
+  margin-left: 1.5rem;
 }
 
 #summary li {
@@ -83,12 +84,187 @@ textarea {
   font-style: italic;
 }
 
-
-#output ul {
-  list-style-type: none;
-  padding-left: 1em;
+/* Enhanced styles for new features */
+#analysis-options {
+  background-color: #1e1e1e;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #444;
 }
 
-#output li {
-  margin-bottom: 5px;
+#analysis-options h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #fff;
+}
+
+#analysis-type {
+  background-color: #2c2c2c;
+  color: white;
+  border: 1px solid #444;
+  padding: 0.5rem;
+  border-radius: 5px;
+  font-size: 1rem;
+  width: 250px;
+}
+
+/* Tab interface styles */
+.analysis-tabs {
+  margin-top: 1rem;
+}
+
+.tab-buttons {
+  display: flex;
+  border-bottom: 2px solid #444;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  background-color: #2c2c2c;
+  color: #ccc;
+  border: none;
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  border-radius: 5px 5px 0 0;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s;
+  font-size: 0.9rem;
+}
+
+.tab-btn:hover {
+  background-color: #3c3c3c;
+  color: white;
+}
+
+.tab-btn.active {
+  background-color: #444;
+  color: white;
+  border-bottom: 2px solid #007bff;
+}
+
+.tab-content {
+  display: none;
+  background-color: #1e1e1e;
+  padding: 1.5rem;
+  border-radius: 0 8px 8px 8px;
+  border: 1px solid #444;
+  min-height: 200px;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Enhanced status styling */
+.status-box {
+  background-color: #1e1e1e;
+  border: 1px solid #444;
+  color: #ddd;
+}
+
+/* File type indicators */
+.file-info {
+  background-color: #2c2c2c;
+  padding: 0.5rem;
+  border-radius: 5px;
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+/* Processing info styling */
+.processing-info {
+  background-color: #1a4d3a;
+  border: 1px solid #28a745;
+  color: #d4edda;
+  padding: 0.75rem;
+  border-radius: 5px;
+  margin: 1rem 0;
+}
+
+/* Error styling */
+.error-info {
+  background-color: #4d1a1a;
+  border: 1px solid #dc3545;
+  color: #f8d7da;
+  padding: 0.75rem;
+  border-radius: 5px;
+  margin: 1rem 0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  body {
+    padding: 1rem;
+  }
+  
+  .tab-buttons {
+    flex-direction: column;
+  }
+  
+  .tab-btn {
+    margin-right: 0;
+    border-radius: 5px;
+  }
+  
+  .tab-content {
+    border-radius: 8px;
+  }
+  
+  #analysis-type {
+    width: 100%;
+  }
+}
+
+/* Enhanced summary content styling */
+#summary h1, #summary h2, #summary h3 {
+  color: #fff;
+  border-bottom: 1px solid #444;
+  padding-bottom: 0.5rem;
+}
+
+#summary h4, #summary h5, #summary h6 {
+  color: #ddd;
+}
+
+#summary code {
+  background-color: #2c2c2c;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  color: #f8f8f2;
+}
+
+#summary pre {
+  background-color: #2c2c2c;
+  padding: 1rem;
+  border-radius: 5px;
+  overflow-x: auto;
+  border: 1px solid #444;
+}
+
+#summary blockquote {
+  border-left: 4px solid #007bff;
+  margin: 1rem 0;
+  padding-left: 1rem;
+  color: #ccc;
+  font-style: italic;
+}
+
+#summary table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+
+#summary th, #summary td {
+  border: 1px solid #444;
+  padding: 0.5rem;
+  text-align: left;
+}
+
+#summary th {
+  background-color: #2c2c2c;
+  font-weight: bold;
 }

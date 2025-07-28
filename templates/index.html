@@ -3,35 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <title>AI Meeting Note Assistant</title>
-  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="/static/style.css?v=3">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h1>AI Meeting Note Assistant</h1>
 
-    <form id="upload-form">
-      <input type="file" id="file" name="file" accept=".mp3,.wav,.txt" required />
+  <h1>AI Meeting Note Assistant</h1>
+
+  <!-- File Upload Box -->
+  <form id="upload-form">
+    <label for="file" class="upload-box">
+      Click to upload or drag & drop a file here<br>
+      <small>MP3, WAV, TXT, PDF, or DOCX • Max 200MB</small>
+    </label>
+    <input type="file" id="file" name="file" accept=".mp3,.wav,.txt,.pdf,.docx" required />
+
+    <div style="text-align: center;">
       <button type="button" id="transcribe-btn">Get Transcript</button>
       <button type="button" id="summarize-btn" disabled>Summarize</button>
-    </form>
-
-    <div id="status" style="margin-top: 1rem;"></div>
-
-    <div style="margin-top: 2rem;">
-      <div id="transcript-section" style="display: none;">
-        <h2>Transcript</h2>
-        <div id="transcript" class="transcript-box"></div>
-      </div>
-
-      <div id="summary-section" style="display: none;">
-        <h2>Summary</h2>
-        <div id="summary" class="summary-box"></div>
-      </div>
     </div>
+
+    <!-- Analysis Options -->
+    <div id="analysis-options" style="display: none; margin-top: 20px; text-align: center;">
+      <h3>Analysis Type</h3>
+      <select id="analysis-type">
+        <option value="comprehensive">Comprehensive Summary</option>
+        <option value="topics">Topic Analysis</option>
+        <option value="actions">Action Items</option>
+        <option value="sentiment">Sentiment Analysis</option>
+        <option value="all">All Analysis Types</option>
+      </select>
+    </div>
+  </form>
+
+  <!-- Status Message -->
+  <div id="status" class="status-box" style="display: none;"></div>
+
+  <!-- Transcript Section -->
+  <div id="transcript-section" style="display: none;">
+    <h2>Transcript</h2>
+    <div id="transcript" class="transcript-box"></div>
+  </div>
+
+  <!-- Summary Section -->
+  <div id="summary-section" style="display: none;">
+    <h2>Summary</h2>
+    <div id="summary" class="summary-box"></div>
   </div>
 
   <script src="{{ request.url_for('static', path='script.js') }}"></script>
-
 </body>
 </html>
